@@ -5,6 +5,7 @@ on:
   push:
     paths:
     - 'simulation_container/**'
+  workflow_dispatch:
 
 
 jobs:
