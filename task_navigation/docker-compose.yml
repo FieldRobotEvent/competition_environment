@@ -1,9 +1,7 @@
 version: '3'
 services:
   simulation:
-    # image: fieldrobotevent/a_container_2021
-    image: simulation
-    build: ../simulation_container
+    image: fieldrobotevent/simulation
     container_name: simulation
     volumes:
       - "~/simulation_assets/map:/simulation_ws/src/virtual_maize_field/map"
