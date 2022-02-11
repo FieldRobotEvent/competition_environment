@@ -59,7 +59,7 @@ RUN echo "source /usr/share/gazebo/setup.sh && \
 # Clone the simulation code from Github and catkin_make
 ENV SIMULATION_WS /simulation_ws
 RUN mkdir -p ${SIMULATION_WS}/src && \
-  git clone https://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@github.com/Rick-v-E/virtual_maize_field ${SIMULATION_WS}/src/virtual_maize_field && \
+  git clone https://github.com/FieldRobotEvent/virtual_maize_field ${SIMULATION_WS}/src/virtual_maize_field && \
   echo "source /opt/ros/${ROS_DISTRO}/setup.bash && \
   cd ${SIMULATION_WS}/ && \
   catkin_make" | bash
