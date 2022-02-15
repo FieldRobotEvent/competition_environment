@@ -17,7 +17,7 @@ cd task_navigation
 docker-compose up
 ```
 This starts the competition environment by creating a simulation container and a robot container. The simulation container will be downloaded automatically. 
-4. Open GZWeb in the browser by going to `http://localhost:8080/` and press the play button to start the simulation. This works best by using Google Chrome.
+4. Open GZWeb in the browser by going to [`http://localhost:8080/`](http://localhost:8080/) and press the play button to start the simulation. This works best by using Google Chrome.
 
 To stop the simulation, press `ctrl+c` in the terminal and execute `docker-compose down` stop both containers.
 
