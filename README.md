@@ -26,9 +26,9 @@ To stop the simulation, press `ctrl+c` in the terminal and execute `docker-compo
 
 ## Troubeshooting
 
-| Error                                   | Cause                                                 | Solution              |
-|-----------------------------------------|-------------------------------------------------------| ----------------------|
-| `xvfb-run: error: Xvfb failed to start` | Another container is still running in the background. | `docker-compose down` |
+| Error | Cause | Solution |
+|---|---| --- |
+| `xvfb-run: error: Xvfb failed to start` | Another container is still running in the background. | Run `docker-compose down` and restart the container using `docker-compose up`. |
 
 If you have another error or the provided solution does not work, create a [new issue](https://github.com/FieldRobotEvent/competition_environment/issues). Help expanding this list by making a [pull request](https://github.com/FieldRobotEvent/competition_environment/pulls).
 
