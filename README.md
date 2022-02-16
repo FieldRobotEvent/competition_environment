@@ -34,6 +34,10 @@ This starts the competition environment by creating a simulation container and a
 
 To stop the simulation, press `ctrl+c` in the terminal and execute `docker-compose down` stop both containers.
 
+## Additional information
+* [Create your robot container from scratch](doc/create_from_scratch.md)
+* [Connect your local ROS installation to the competition environment](doc/connect_ros_to_containers.md)
+
 ## Troubeshooting
 
 | Error | Cause | Solution |
@@ -42,7 +46,3 @@ To stop the simulation, press `ctrl+c` in the terminal and execute `docker-compo
 | `RLException: [simulation.launch] is neither a launch file in package [virtual_maize_field] nor is [virtual_maize_field] a launch file name` | Simulation container cannot find the simulation launch script, because it is not in the folder `~/simulation_assets/launch`. | Run `python3 scripts/gather_files_for_simulation.py`. |
 
 If you have another error or the provided solution does not work, create a [new issue](https://github.com/FieldRobotEvent/competition_environment/issues). Help expanding this list by making a [pull request](https://github.com/FieldRobotEvent/competition_environment/pulls).
-
-## Additional information
-* [Create your robot container from scratch](doc/create_from_scratch.md)
-* [Connect your local ROS installation to the competition environment](doc/connect_ros_to_containers.md)
