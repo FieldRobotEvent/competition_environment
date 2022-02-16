@@ -4,8 +4,6 @@ This repository contains the Dockerfiles and additional scripts needed to run a 
 1. The simulation container which is provided by the organisation. This container will provide the Gazebo simulation and simulates all sensor data of your robot inside the virtual world.
 2. The robot container which is made by you. This container should include all software needed to run your robot. An [example workspace](https://github.com/FieldRobotEvent/example_ws) containing a Dockerfile to build a robot container is provided.
 
-The figure below visualizes the use of both Docker containers.
-
 <img src="doc/docker_container_structure.svg" alt="Docker Container structure">
 
 ### Test competition on your own hardware
@@ -16,13 +14,14 @@ Before the Field Robot Event start, we ask you to sent us your robot container b
 
 
 ## Usage
-To run the competition environment, follow the steps below:
+To run the competition environment on your own computer, follow the steps below:
 1. Create a Docker image of your robot workspace. This is explained in the [example workspace](https://github.com/FieldRobotEvent/example_ws).
    
 2. Gather all files that are used for the simulation (meshes, textures, world files etc.):
 ```commandline
 python3 scripts/gather_files_for_simulation.py
 ```
+These files will be automatically copied to the `~/simulation_assets` folder.
 
 3. Start the competition environment:
 ```commandline
@@ -40,6 +39,7 @@ To stop the simulation, press `ctrl+c` in the terminal and execute `docker-compo
 | Error | Cause | Solution |
 |---|---| --- |
 | `xvfb-run: error: Xvfb failed to start` | Another container is still running in the background. | Run `docker-compose down` and restart the container using `docker-compose up`. |
+| `RLException: [simulation.launch] is neither a launch file in package [virtual_maize_field] nor is [virtual_maize_field] a launch file name` | Simulation container cannot find the simulation launch script, because it is not in the folder `~/simulation_assets/launch`. | Run `python3 scripts/gather_files_for_simulation.py`. |
 
 If you have another error or the provided solution does not work, create a [new issue](https://github.com/FieldRobotEvent/competition_environment/issues). Help expanding this list by making a [pull request](https://github.com/FieldRobotEvent/competition_environment/pulls).
 
