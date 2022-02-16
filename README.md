@@ -43,3 +43,5 @@ To stop the simulation, press `ctrl+c` in the terminal and execute `docker-compo
 
 If you have another error or the provided solution does not work, create a [new issue](https://github.com/FieldRobotEvent/competition_environment/issues). Help expanding this list by making a [pull request](https://github.com/FieldRobotEvent/competition_environment/pulls).
 
+## Links
+* [Create your robot container from scratch](doc/create_from_scratch.md)
