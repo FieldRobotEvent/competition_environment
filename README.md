@@ -4,6 +4,17 @@ This repository contains the Dockerfiles and additional scripts needed to run a 
 1. The simulation container which is provided by the organisation. This container will provide the Gazebo simulation and simulates all sensor data of your robot inside the virtual world.
 2. The robot container which is made by you. This container should include all software needed to run your robot. An [example workspace](https://github.com/FieldRobotEvent/example_ws) containing a Dockerfile to build a robot container is provided.
 
+The figure below visualizes the use of both Docker containers.
+
+<img src="doc/docker_container_structure.svg" alt="Docker Container structure">
+
+### Test competition on your own hardware
+When testing the competition environment on your own computer, the simulation container is downloaded automatically from Dockerhub. The world files generated in the [virtual maize field](https://github.com/FieldRobotEvent/virtual_maize_field) in your robot workspace will be copied and used for the simulation. You can start the simulation by going to [https://localhost:8080](https://localhost:8080) in your webbrowser.
+
+### On the Field Robot Event
+Before the Field Robot Event start, we ask you to sent us your robot container by using FileTransfer or Dockerhub. During the event, the organisation creates the world files. Your robot will be simulated on the hardware of the organization and the simulation will be projected on a screen and streamed to the internet. 
+
+
 ## Usage
 To run the competition environment, follow the steps below:
 1. Create a Docker image of your robot workspace. This is explained in the [example workspace](https://github.com/FieldRobotEvent/example_ws).
