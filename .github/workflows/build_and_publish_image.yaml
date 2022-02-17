@@ -1,15 +1,20 @@
-name: build_and_publish_image
+name: Publish to Dockerhub
 
 # Only trigger when we make a change to the simulation container
 on:
   push:
+    branches:
+      - main
     paths:
-    - 'simulation_container/**'
+    - 'dockerfiles/**'
   workflow_dispatch:
 
 
 jobs:
-  docker:
+  simulation:
+    strategy:
+      matrix:
+        image: ["simulation", "simulation_nvidia"]
     runs-on: ubuntu-latest
     steps:
       -
@@ -31,6 +36,6 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: simulation_container
+          context: dockerfiles/${{ matrix.image }}
           push: true
-          tags: fieldrobotevent/simulation:latest
+          tags: fieldrobotevent/${{ matrix.image }}:latest

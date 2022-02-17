@@ -6,7 +6,7 @@ import shutil
 
 import rospkg
 
-SIMULATION_ASSETS_FOLDER = pathlib.Path.home() / "simulation_assets"
+SIMULATION_ASSETS_FOLDER = pathlib.Path(__file__).parents[1] / "simulation_files"
 VMF_FOLDERS_TO_COPY = [
     "Media",
     "map",
@@ -390,7 +390,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
                 shutil.copy2(s, d)
 
 
-def remove_empty_directories(path, removeRoot=True):
+def remove_empty_directories(path, remove_root=True):
     """
     Source: https://jacobtomlinson.dev/posts/2014/python-script-recursively-remove-empty-folders/directories/
     """
@@ -407,21 +407,8 @@ def remove_empty_directories(path, removeRoot=True):
 
     # if folder empty, delete it
     files = os.listdir(path)
-    if len(files) == 0 and removeRoot:
+    if len(files) == 0 and remove_root:
         os.rmdir(path)
-
-
-def backup_assets_folder():
-    if SIMULATION_ASSETS_FOLDER.is_dir():
-        backup_folder = SIMULATION_ASSETS_FOLDER.parent / (
-            SIMULATION_ASSETS_FOLDER.name + "-backup"
-        )
-
-        # Remove backup folder if it exists
-        shutil.rmtree(backup_folder, ignore_errors=True)
-
-        # Rename assets folder
-        SIMULATION_ASSETS_FOLDER.rename(backup_folder)
 
 
 def gather_and_copy_files():
@@ -485,6 +472,4 @@ if __name__ == "__main__":
 
     if valid:
         print("\nCopy files:")
-        # Backup and copy assets files
-        backup_assets_folder()
         gather_and_copy_files()

@@ -1,23 +1,33 @@
 version: '3'
 services:
   simulation:
-    image: fieldrobotevent/simulation:latest
+    image: fieldrobotevent/simulation_nvidia:latest
     container_name: simulation
     volumes:
       - "../simulation_files/map:/simulation_ws/src/virtual_maize_field/map"
       - "../simulation_files/Media:/simulation_ws/src/virtual_maize_field/Media"
       - "../simulation_files/worlds:/simulation_ws/src/virtual_maize_field/worlds"
       - "../simulation_files/launch:/simulation_ws/src/virtual_maize_field/launch"
-      - "../simulation_files/gzweb:/gzweb/http/client/assets"
       - "../simulation_files/robot_packages:/simulation_ws/src/robot_packages"
+      - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+      - "/tmp/.docker.xauth:/tmp/.docker.xauth"
     ports:
-    - "8080:8080"
     - "11345:11345"
     networks:
       competition_network:
         ipv4_address: 172.20.0.5
     environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - XAUTHORITY=/tmp/.docker.xauth
       - ROS_IP=172.20.0.5 
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
 
   robot_container:
     depends_on:
