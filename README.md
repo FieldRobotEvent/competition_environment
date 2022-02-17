@@ -1,7 +1,7 @@
 # Competition environment
 This repository contains the `docker-compose` scripts needed to run a competition on your own computer. For each task, one `docker-compose` script is provided. These compose files are creating two Docker containers:
 
-1. The simulation container that is simulating the virtual maize field and the robots sensor data. This container is created from the [simulation image](https://hub.docker.com/repository/docker/fieldrobotevent/simulation) and is provided by the organization. 
+1. The simulation container that is simulating the virtual maize field and the robots sensor data. This container is created from the [simulation image](https://hub.docker.com/r/fieldrobotevent/simulation) and is provided by the organization. 
 2. The robot container that is defining the robots behaviour and includes all software needed to run your robot. This container is created from a robot workspace image which is build by you. An [example workspace](https://github.com/FieldRobotEvent/example_ws) containing a Dockerfile to build a robot container is provided.
 
 <img src="doc/docker_container_structure.svg" alt="Docker Container structure">
