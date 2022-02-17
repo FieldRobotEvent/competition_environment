@@ -3,6 +3,8 @@ name: Publish to Dockerhub
 # Only trigger when we make a change to the simulation container
 on:
   push:
+    branches:
+      - main
     paths:
     - 'dockerfiles/**'
   workflow_dispatch:
@@ -36,4 +38,4 @@ jobs:
         with:
           context: dockerfiles/${{ matrix.image }}
           push: true
-          tags: fieldrobotevent/ ${{ matrix.image }}:latest
+          tags: fieldrobotevent/${{ matrix.image }}:latest
