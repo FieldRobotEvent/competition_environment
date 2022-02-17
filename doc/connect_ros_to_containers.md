@@ -1,5 +1,5 @@
 # Connect your local ROS installation to the competition environment
-To run additional (debugging) nodes on your computer, or watch the contents of certain topics, you have to change the `ROS_MASTER_URI` (temporary) to the ip-address of the simulation container (which is running the rostmaster).
+To run additional (debugging) nodes on your computer, or watch the content of certain topics, you have to change the `ROS_MASTER_URI` (temporary) to the ip-address of the simulation container (which is running the rostmaster).
 
 In a terminal, change to `ROS_MASTER_URI` by:
 ```commandline

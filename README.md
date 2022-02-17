@@ -1,27 +1,26 @@
 # Competition environment
-This repository contains the Dockerfiles and additional scripts needed to run a competition on your own computer. This competition uses two Docker containers (e.g. stand-alone software parts):
+This repository contains the `docker-compose` scripts needed to run a competition on your own computer. For each task, one `docker-compose` script is provided. These compose files are creating two Docker containers:
 
-1. The simulation container which is provided by the organisation. This container will provide the Gazebo simulation and simulates all sensor data of your robot inside the virtual world.
-2. The robot container which is made by you. This container should include all software needed to run your robot. An [example workspace](https://github.com/FieldRobotEvent/example_ws) containing a Dockerfile to build a robot container is provided.
+1. The simulation container that is simulating the virtual maize field and the robots sensor data. This container is created from the simulation [Dockerfile](/dockerfiles/simulation/Dockerfile) and is provided by the organization. 
+2. The robot container that is defining the robots behaviour and includes all software needed to run your robot. This container is created from a robot workspace image which is build by you. An [example workspace](https://github.com/FieldRobotEvent/example_ws) containing a Dockerfile to build a robot container is provided.
 
 <img src="doc/docker_container_structure.svg" alt="Docker Container structure">
 
 ### Test competition on your own hardware
-When testing the competition environment on your own computer, the simulation container is downloaded automatically from Dockerhub. The world files generated in the [virtual maize field](https://github.com/FieldRobotEvent/virtual_maize_field) in your robot workspace will be copied and used for the simulation. You can start the simulation by going to [https://localhost:8080](https://localhost:8080) in your webbrowser.
+When testing the competition environment on your own computer, the simulation image is downloaded automatically from Dockerhub. The world files generated in the [virtual maize field](https://github.com/FieldRobotEvent/virtual_maize_field) in your robot workspace will be copied and used for the simulation. You can start the simulation by going to [https://localhost:8080](https://localhost:8080) in your webbrowser and press the play button.
 
 ### On the Field Robot Event
-Before the Field Robot Event start, we ask you to sent us your robot container by using FileTransfer or Dockerhub. During the event, the organisation creates the world files. Your robot will be simulated on the hardware of the organization and the simulation will be projected on a screen and streamed to the internet. 
-
+Before the Field Robot Event start, we ask you to sent us your robot image by using FileTransfer or Dockerhub. The world files used in the event are created by the organization. Your robot will be simulated on the hardware of the organization and the simulation will be projected on a screen and streamed to the internet. 
 
 ## Usage
 To run the competition environment on your own computer, follow the steps below:
 1. Create a Docker image of your robot workspace. This is explained in the [example workspace](https://github.com/FieldRobotEvent/example_ws).
    
-2. Gather all files that are used for the simulation (meshes, textures, world files etc.):
+2. Copy all files that are used for the simulation (meshes, textures, world files etc.) in the [simulation_files](/simulation_files) folder:
 ```commandline
-python3 scripts/gather_files_for_simulation.py
+python3 scripts/copy_simulation_files.py
 ```
-These files will be automatically copied to the `~/simulation_assets` folder.
+This script will automatically find your robot workspace and copies the nessesary files to the correct folder.
 
 3. Start the competition environment:
 ```commandline
@@ -32,11 +31,14 @@ This starts the competition environment by creating a simulation container and a
 
 4. Open GZWeb in the browser by going to [`http://localhost:8080/`](http://localhost:8080/) and press the play button to start the simulation. This works best by using Google Chrome.
 
-To stop the simulation, press `ctrl+c` in the terminal and execute `docker-compose down` stop both containers.
+To stop the simulation, press `ctrl+c` in the terminal and execute `docker-compose down` stop both containers. 
+
+If you are not new to Docker and you are using a computer with a NVIDIA GPU, you can speed up the simulation by using the GPU inside the Docker. This is explained in more detail [here](doc/use_gpu_in_docker.md).
 
 ## Additional information
 * [Create your robot container from scratch](doc/create_from_scratch.md)
 * [Connect your local ROS installation to the competition environment](doc/connect_ros_to_containers.md)
+* [Use a NVIDIA GPU to speed up the simulation](doc/use_gpu_in_docker.md)
 
 ## Troubeshooting
 

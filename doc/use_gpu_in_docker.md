@@ -1,5 +1,5 @@
 # Use GPU for simulation inside Docker
-If you have a computer with a (recent) NVIDIA GPU, you can use this to speed up the simulation container. To this end, we provide a seperate simulation image on [Dockerhub](https://dockerhub.com/fieldrobotevent/) in which the GPU is enabled. Instead of using `GZWeb`, this simulation image automatically launches the Gazebo Client user interface and RVIZ.
+If you have a computer with a (recent) NVIDIA GPU, you can use the GPU to speed up the simulation container. To this end, we provide a seperate simulation image on [Dockerhub](https://hub.docker.com/repository/docker/fieldrobotevent/simulation_nvidia) in which the GPU is enabled. Instead of using `GZWeb`, this simulation image automatically launches the Gazebo Client user interface and RVIZ.
 
 Before you can use your GPU inside the Docker, you need to install the NVIDIA container toolkit and upgrade docker-compose to the newest version.
 
@@ -53,4 +53,4 @@ cd task_navigation_nvidia
 ./start_simulation.sh
 ```
 
-The bash script inside this folder is setting up `XAuthority` to be able to launch screens from the Docker in your computer and afterwards starts the simulation by `docker-compose up`. You can stop the simulation by pressing `Ctrl+C` and stop the container by `docker-compose down`. 
+The bash script inside this folder is setting up `XAuthority` to be able to launch screens from the Docker in your computer and afterwards starts the simulation by `docker-compose up`. You can stop the simulation by pressing `ctrl+c` and stop the container by running `docker-compose down` in the terminal. 
