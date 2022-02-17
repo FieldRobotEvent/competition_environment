@@ -45,6 +45,6 @@ If you are not new to Docker and you are using a computer with a NVIDIA GPU, you
 | Error | Cause | Solution |
 |---|---| --- |
 | `xvfb-run: error: Xvfb failed to start` | Another container is still running in the background. | Run `docker-compose down` and restart the container using `docker-compose up`. |
-| `RLException: [simulation.launch] is neither a launch file in package [virtual_maize_field] nor is [virtual_maize_field] a launch file name` | Simulation container cannot find the simulation launch script, because it is not in the folder `~/simulation_assets/launch`. | Run `python3 scripts/gather_files_for_simulation.py`. |
+| `RLException: [simulation.launch] is neither a launch file in package [virtual_maize_field] nor is [virtual_maize_field] a launch file name` | Simulation container cannot find the simulation launch script, because it is not in the folder `~/simulation_assets/launch`. | Run `python3 scripts/copy_simulation_files.py`. |
 
 If you have another error or the provided solution does not work, create a [new issue](https://github.com/FieldRobotEvent/competition_environment/issues). Help expanding this list by making a [pull request](https://github.com/FieldRobotEvent/competition_environment/pulls).
