@@ -1,7 +1,7 @@
 # Create a robot container from scratch
 We have selected to use containers in order to allow you to be as creative as you can be as a competitor. In the example workspace we provide a [Dockerfile](https://github.com/FieldRobotEvent/example_ws/blob/main/Dockerfile) which should work for most robots. However, you are free to implement a robot container from scratch. This document provides you some hints.
 
-To develop a container from scratch, please consider reading the [Dockerfile](https://github.com/FieldRobotEvent/example_ws/blob/main/Dockerfile) provided in the example workspace as a starting point. We would encourage you to do so using a Dockerfile, and then to compile your container using `docker build . -t robot_workspace` from it. This will allow you to more easily reproduce the work. We use ROS Noetic, however using another version of ROS or ROS2 should work as well.
+To develop a container from scratch, please consider reading the [Dockerfile](https://github.com/FieldRobotEvent/example_ws/blob/main/Dockerfile) provided in the example workspace as a starting point. We would encourage you to do so using a Dockerfile, and then to compile your image using `docker build . -t robot_workspace` from it. This will allow you to more easily reproduce the work. We use ROS Noetic, however using another version of ROS or ROS2 should work as well.
 
 ## Hints for starting from scratch
 

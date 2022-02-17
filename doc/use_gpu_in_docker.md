@@ -53,4 +53,4 @@ cd task_navigation_nvidia
 ./start_simulation.sh
 ```
 
-The bash script inside this folder is setting up `XAuthority` to be able to launch screens from the Docker in your computer and afterwards starts the simulation by `docker-compose up`. You can stop the simulation by pressing `Ctrl+C` and stop the container by `docker-compose down`. 
+The bash script inside this folder is setting up `XAuthority` to be able to launch screens from the Docker in your computer and afterwards starts the simulation by `docker-compose up`. You can stop the simulation by pressing `ctrl+c` and stop the container by running `docker-compose down` in the terminal. 
