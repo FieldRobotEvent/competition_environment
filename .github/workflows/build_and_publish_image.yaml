@@ -1,15 +1,17 @@
-name: build_and_publish_image
+name: Publish to Dockerhub
 
 # Only trigger when we make a change to the simulation container
 on:
   push:
+    branches:
+      - main
     paths:
-    - 'simulation_container/**'
+    - 'dockerfiles/**'
   workflow_dispatch:
 
 
 jobs:
-  docker:
+  upload_simulation_image:
     runs-on: ubuntu-latest
     steps:
       -
@@ -31,6 +33,32 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: simulation_container
+          context: dockerfiles/simulation
           push: true
           tags: fieldrobotevent/simulation:latest
+  upload_simulation_nvidia_image:
+    needs: upload_simulation_image  # Because simulation image is base of nvidia image
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: dockerfiles/simulation_nvidia
+          push: true
+          tags: fieldrobotevent/simulation_nvidia:latest

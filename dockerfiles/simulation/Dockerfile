@@ -31,7 +31,6 @@ RUN apt-get update && \
     libboost-dev \
     imagemagick \
     libtinyxml-dev \ 
-    mercurial \
     cmake \
     build-essential && \
   rm -rf /var/lib/apt/lists/* && \

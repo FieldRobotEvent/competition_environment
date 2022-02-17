@@ -1,0 +1,5 @@
+/simulation_files/*
+
+*.pyc
+
+!/simulation_files/.gitkeep
