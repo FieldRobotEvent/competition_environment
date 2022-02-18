@@ -3,8 +3,11 @@ import os
 import pathlib
 import re
 import shutil
+from xml.etree import ElementTree
 
 import rospkg
+
+COLLADA_NS = "{http://www.collada.org/2005/11/COLLADASchema}"
 
 SIMULATION_ASSETS_FOLDER = pathlib.Path(__file__).parents[1] / "simulation_files"
 VMF_FOLDERS_TO_COPY = [
@@ -80,42 +83,42 @@ def get_gazebo_material_resources():
 
 
 def get_simulation_resources_from_file(file):
-    DEP_IN_XACRO_REGEX = re.compile(r"filename=\"(.+?)\"")
     packages = []
     resources = []
 
-    # Open file and search for the dependencies within the file
-    for xacro_dependency in re.finditer(
-        DEP_IN_XACRO_REGEX, file.read_text(encoding="utf-8")
-    ):
-        xacro_file_path = xacro_dependency.group(1)
-        if xacro_file_path.startswith("package://"):
+    root = ElementTree.parse(file).getroot()
+    for tag in root.findall(".//*[@filename]"):
+        if tag.attrib["filename"].startswith("package://"):
             package_name_match = re.search(
-                r"package:\/\/(.+?)\/(.+\..+)", xacro_file_path
+                r"package:\/\/(.+?)\/(.+\..+)", tag.attrib["filename"]
             )
             if package_name_match is None:
-                raise SyntaxError(f"Cannot match resource path {xacro_file_path}")
+                raise SyntaxError(
+                    f"Cannot match resource path {tag.attrib['filename']}"
+                )
 
             package_name, resource_path = package_name_match.group(
                 1
             ), package_name_match.group(2)
 
-        elif xacro_file_path.startswith("$(find"):
+        elif tag.attrib["filename"].startswith("$(find"):
             package_name_match = re.search(
-                r"\$\(find (.+)\)\/(.+\..+)", xacro_file_path
+                r"\$\(find (.+)\)\/(.+\..+)", tag.attrib["filename"]
             )
             if package_name_match is None:
-                raise SyntaxError(f"Cannot match resource path {xacro_file_path}")
+                raise SyntaxError(
+                    f"Cannot match resource path {tag.attrib['filename']}"
+                )
 
             package_name, resource_path = package_name_match.group(
                 1
             ), package_name_match.group(2)
 
-        elif xacro_file_path.endswith(".so"):
+        elif tag.attrib["filename"].endswith(".so"):
             continue
 
         else:
-            raise NotImplementedError(f"Cannot parse {xacro_file_path}")
+            raise NotImplementedError(f"Cannot parse {tag.attrib['filename']}")
 
         # Resolve file path
         resource_path_in_package = (
@@ -128,7 +131,7 @@ def get_simulation_resources_from_file(file):
 
         if not resource_path.is_file():
             raise FileNotFoundError(
-                f"Could not resolve file {resource_path} in {xacro_file_path}"
+                f"Could not resolve file {resource_path} in {tag.attrib['filename']}"
             )
 
         packages.append(package_name)
@@ -306,19 +309,16 @@ def check_world_file():
 
     # Empty <materials></materials> tags don't work using GZWeb. Raise error if they are in the world file. Probably because of old world
     # template
-    if (
-        re.search(
-            r"<materials>[\r\n\s]*<\/materials>", world_file.read_text(encoding="utf-8")
-        )
-        is not None
-    ):
-        msg = (
-            f"The world file '{world_file}' contains empty <materials></materials>"
-            " tags. This gives a problem in visualisation of the environment. Update"
-            " the virtual_maize_field package to the newest version or manually remove"
-            " the empty <materials></materials>tags from the world file."
-        )
-        return Validation.ERROR, msg
+    root = ElementTree.parse(world_file).getroot()
+    for m_tag in root.findall(".//materials"):
+        if m_tag.text is None:
+            msg = (
+                f"The world file '{world_file}' contains empty <materials></materials>"
+                " tags. This gives a problem in visualisation of the environment. Update"
+                " the virtual_maize_field package to the newest version or manually remove"
+                " the empty <materials></materials>tags from the world file."
+            )
+            return Validation.ERROR, msg
 
     msg = "World file is correct."
     return Validation.OK, msg
@@ -357,18 +357,21 @@ def check_mesh_files():
     i = 0
     for mesh_file in workspace_src_folder.glob("**/*.dae"):
         i += 1
-        match = re.search(
-            r"<init_from>(.+(\.png|\.jpg|\.jpeg))<\/init_from>",
-            mesh_file.read_text(encoding="utf-8"),
-        )
-        if match and "../materials/textures" not in match.group(1):
-            msg = (
-                f"Texture '{ match.group(1).split('/')[-1] }' in"
-                f" '{mesh_file.parents[1]}' should be placed in the folder"
-                f" {mesh_file.parents[1]}/materials/textures'. Move the file to this"
-                f" folder and edit the '{mesh_file.name} file."
-            )
-            return Validation.ERROR, msg
+
+        root = ElementTree.parse(mesh_file).getroot()
+        for init_tag in root.findall(f".//{COLLADA_NS}init_from"):
+            if (
+                init_tag.text.endswith(".png")
+                or init_tag.text.endswith(".jpg")
+                or init_tag.text.endswith(".jpeg")
+            ) and "../materials/textures" not in init_tag.text:
+                msg = (
+                    f"Texture '{ init_tag.text.split('/')[-1] }' in"
+                    f" '{mesh_file.parents[1]}' should be placed in the folder"
+                    f" {mesh_file.parents[1]}/materials/textures'. Move the file to this"
+                    f" folder and edit the '{mesh_file.name} file."
+                )
+                return Validation.ERROR, msg
 
     msg = f"All { i } mesh files are valid"
     return Validation.OK, msg
@@ -471,5 +474,10 @@ if __name__ == "__main__":
     valid = validator.validate_all()
 
     if valid:
+        print("\nRemoving old simulation files...")
+        for f in SIMULATION_ASSETS_FOLDER.glob("*"):
+            if f.is_dir():
+                shutil.rmtree(f)
+
         print("\nCopy files:")
         gather_and_copy_files()
