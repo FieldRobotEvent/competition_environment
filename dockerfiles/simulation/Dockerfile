@@ -25,7 +25,6 @@ RUN apt-get update && \
     ros-${ROS_DISTRO}-ros-controllers \
     ros-${ROS_DISTRO}-four-wheel-steering-controller \
     ros-${ROS_DISTRO}-urdf-geometry-parser \
-    ros-${ROS_DISTRO}-hector-gazebo-plugins \
     # GZWeb dependencies
     libjansson-dev \
     libboost-dev \
@@ -59,6 +58,7 @@ RUN echo "source /usr/share/gazebo/setup.sh && \
 ENV SIMULATION_WS /simulation_ws
 RUN mkdir -p ${SIMULATION_WS}/src && \
   git clone https://github.com/FieldRobotEvent/virtual_maize_field ${SIMULATION_WS}/src/virtual_maize_field && \
+  git clone https://github.com/FieldRobotEvent/hector_gazebo_plugins ${SIMULATION_WS}/src/hector_gazebo_plugins && \
   echo "source /opt/ros/${ROS_DISTRO}/setup.bash && \
   cd ${SIMULATION_WS}/ && \
   catkin_make" | bash
