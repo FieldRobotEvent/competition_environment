@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import os
 import pathlib
 import re
 import shutil
+from collections.abc import Callable
 from xml.etree import ElementTree
 
 import rospkg
@@ -10,17 +13,17 @@ import rospkg
 COLLADA_NS = "{http://www.collada.org/2005/11/COLLADASchema}"
 
 SIMULATION_ASSETS_FOLDER = pathlib.Path(__file__).parents[1] / "simulation_files"
-VMF_FOLDERS_TO_COPY = [
+VMF_FOLDERS_TO_COPY = (
     "Media",
     "map",
     "worlds",
     "launch",
-]  # Folders that are needed by the simulation container
-GZWEB_VMF_FOLDERS_TO_COPY = [
+)  # Folders that are needed by the simulation container
+GZWEB_VMF_FOLDERS_TO_COPY = (
     "models",
     "Media/models",
-]  # Folders that are needed for GZWeb in the simulation container
-GZWEB_EXTENSIONS_TO_KEEP = [
+)  # Folders that are needed for GZWeb in the simulation container
+GZWEB_EXTENSIONS_TO_KEEP = (
     ".stl",
     ".dae",
     ".sdf",
@@ -31,9 +34,9 @@ GZWEB_EXTENSIONS_TO_KEEP = [
     ".tiff",
     ".jpeg",
     ".gazebo",
-]  # File extensions that are needed by GZWeb
+)  # File extensions that are needed by GZWeb
 
-GAZEBO_EXTENSIONS_TO_KEEP = [
+GAZEBO_EXTENSIONS_TO_KEEP = (
     ".stl",
     ".dae",
     ".sdf",
@@ -45,10 +48,18 @@ GAZEBO_EXTENSIONS_TO_KEEP = [
     ".jpeg",
     ".gazebo",
     ".xml",
-]  # File extensions that are needed by Gazebo in the simulation container
+)  # File extensions that are needed by Gazebo in the simulation container
+
+ALLOWED_GAZEBO_PLUGINS = (
+    "libgazebo_ros_camera.so",
+    "libgazebo_ros_multicamera.so",
+    "libgazebo_ros_control.so",
+    "libgazebo_ros_gpu_laser.so",
+    "libhector_gazebo_ros_imu.so",
+)  # All allowed sensor plugins. No other plugins will be installed in the simulation conainer.
 
 
-def get_workspace_folder():
+def get_workspace_folder() -> pathlib.Path:
     workspace_src_folder = pathlib.Path(
         rospkg.RosPack().get_path("virtual_maize_field")
     )
@@ -66,7 +77,7 @@ def get_workspace_folder():
     return workspace_src_folder
 
 
-def get_gazebo_material_resources():
+def get_gazebo_material_resources() -> pathlib.Path:
     gz_resource_path = os.environ.get("GAZEBO_RESOURCE_PATH", None)
 
     if gz_resource_path is None:
@@ -82,7 +93,9 @@ def get_gazebo_material_resources():
     raise NotADirectoryError("Could not find the gazebo material resource folder!")
 
 
-def get_simulation_resources_from_file(file):
+def get_simulation_resources_from_file(
+    file: pathlib.Path,
+) -> tuple[list[str], list[pathlib.Path]]:
     packages = []
     resources = []
 
@@ -140,7 +153,7 @@ def get_simulation_resources_from_file(file):
     return packages, resources
 
 
-def get_simulation_resources_from_workspace():
+def get_simulation_resources_from_workspace() -> tuple[list[str], list[pathlib.Path]]:
     dependencies = []
     workspace = get_workspace_folder()
 
@@ -170,6 +183,7 @@ def get_simulation_resources_from_workspace():
     # Parse dependencies of the xacro files recursively, following the .xacro files used within the collected
     # .xacro files
     dependency_contains_xacro = True
+    all_xacro_files = used_xacro_files
     while dependency_contains_xacro:
         xacro_resource_paths = []
 
@@ -188,7 +202,7 @@ def get_simulation_resources_from_workspace():
             dependency_contains_xacro = False
 
         elif not any(
-            r.suffix == ".xacro" or r.suffix == ".urdf" for r in xacro_resource_paths
+            r.suffix in (".xacro", ".urdf", ".gazebo") for r in xacro_resource_paths
         ):
             dependency_contains_xacro = False
 
@@ -197,10 +211,12 @@ def get_simulation_resources_from_workspace():
             used_xacro_files = [
                 r
                 for r in xacro_resource_paths
-                if r.suffix == ".xacro" or r.suffix == ".urdf"
+                if r.suffix in (".xacro", ".urdf", ".gazebo")
             ]
 
-    return list(set(dependencies))
+            all_xacro_files.extend(used_xacro_files)
+
+    return list(set(dependencies)), list(set(all_xacro_files))
 
 
 class Validation:
@@ -208,13 +224,13 @@ class Validation:
     OK = 2
     WARNING = 3
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.validation_checks = []
 
-    def register(self, f):
+    def register(self, f: Callable[[], tuple[int, str]]) -> None:
         self.validation_checks.append(f)
 
-    def validate_all(self):
+    def validate_all(self) -> bool:
         for ck in self.validation_checks:
             name = ck.__name__.replace("check_", "").replace("_", " ").capitalize()
             val, msg = ck()
@@ -241,7 +257,7 @@ validator = Validation()
 
 
 @validator.register
-def check_find_workspace():
+def check_find_workspace() -> tuple[int, str]:
     # Check if we can find the workspace based on the ROS PACKAGE PATH of the virtual_maize_field package
     try:
         workspace_src_folder = get_workspace_folder()
@@ -266,7 +282,7 @@ def check_find_workspace():
 
 
 @validator.register
-def check_find_gazebo_resources():
+def check_find_gazebo_resources() -> tuple[int, str]:
     # Check if we can find the Gazebo material resource
     try:
         gazebo_material_resource_folder = get_gazebo_material_resources()
@@ -294,7 +310,7 @@ def check_find_gazebo_resources():
 
 
 @validator.register
-def check_world_file():
+def check_world_file() -> tuple[int, str]:
     world_file = (
         pathlib.Path(rospkg.RosPack().get_path("virtual_maize_field"))
         / "worlds/generated.world"
@@ -325,9 +341,9 @@ def check_world_file():
 
 
 @validator.register
-def check_xacro_dependencies():
+def check_xacro_dependencies() -> tuple[int, str]:
     try:
-        resources = get_simulation_resources_from_workspace()
+        resources, _ = get_simulation_resources_from_workspace()
         msg = f"Need resources from {resources}"
         return Validation.OK, msg
 
@@ -351,7 +367,7 @@ def check_xacro_dependencies():
 
 
 @validator.register
-def check_mesh_files():
+def check_mesh_files() -> tuple[int, str]:
     workspace_src_folder = get_workspace_folder()
 
     i = 0
@@ -377,7 +393,32 @@ def check_mesh_files():
     return Validation.OK, msg
 
 
-def copytree(src, dst, symlinks=False, ignore=None):
+@validator.register
+def check_gazebo_plugins() -> tuple[int, str]:
+    _, xacro_files = get_simulation_resources_from_workspace()
+
+    for xacro_file in xacro_files:
+        root = ElementTree.parse(xacro_file).getroot()
+        for plugin_tag in root.findall(".//plugin"):
+            if plugin_tag.attrib["filename"] not in ALLOWED_GAZEBO_PLUGINS:
+                allowed_plugin_str = ", ".join(ALLOWED_GAZEBO_PLUGINS)
+                msg = (
+                    f"Gazebo plugin '{plugin_tag.attrib['filename']}' used in"
+                    f" '{xacro_file.name}' is not allowed in the"
+                    f" competition! Allowed sensor plugins are: {allowed_plugin_str}"
+                )
+                return Validation.ERROR, msg
+
+    msg = "All used Gazebo plugins are allowed"
+    return Validation.OK, msg
+
+
+def copytree(
+    src: pathlib.Path | str,
+    dst: pathlib.Path | str,
+    symlinks: bool = False,
+    ignore: list[str] | None = None,
+) -> None:
     """
     Source: https://stackoverflow.com/questions/1868714/how-do-i-copy-an-entire-directory-of-files-into-an-existing-directory-using-pyth
     """
@@ -393,7 +434,9 @@ def copytree(src, dst, symlinks=False, ignore=None):
                 shutil.copy2(s, d)
 
 
-def remove_empty_directories(path, remove_root=True):
+def remove_empty_directories(
+    path: pathlib.Path | str, remove_root: bool = True
+) -> None:
     """
     Source: https://jacobtomlinson.dev/posts/2014/python-script-recursively-remove-empty-folders/directories/
     """
@@ -414,7 +457,7 @@ def remove_empty_directories(path, remove_root=True):
         os.rmdir(path)
 
 
-def gather_and_copy_files():
+def gather_and_copy_files() -> None:
     vmf = pathlib.Path(rospkg.RosPack().get_path("virtual_maize_field"))
 
     for folder in VMF_FOLDERS_TO_COPY:
@@ -438,7 +481,7 @@ def gather_and_copy_files():
     copytree(gazebo_material_resources, gzweb_folder / "materials/scripts")
 
     # Copy all custom packages from workspace
-    required_packages = get_simulation_resources_from_workspace()
+    required_packages, _ = get_simulation_resources_from_workspace()
     for pkg in required_packages:
         pkg_path = pathlib.Path(rospkg.RosPack().get_path(pkg))
         if (pkg_path / "meshes").is_dir():
@@ -455,7 +498,7 @@ def gather_and_copy_files():
     robot_packages_folder = SIMULATION_ASSETS_FOLDER / "robot_packages"
     robot_packages_folder.mkdir()
 
-    required_packages = get_simulation_resources_from_workspace()
+    required_packages, _ = get_simulation_resources_from_workspace()
     for pkg in required_packages:
         pkg_path = pathlib.Path(rospkg.RosPack().get_path(pkg))
         print(f"\033[92m\u2714 {pkg_path} -> {robot_packages_folder}\033[0m")
