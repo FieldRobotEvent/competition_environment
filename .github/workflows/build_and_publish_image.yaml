@@ -6,7 +6,8 @@ on:
     branches:
       - main
     paths:
-    - 'dockerfiles/**'
+    - 'dockerfiles/simulation/**'
+    - 'dockerfiles/simulation_nvidia/**'
   workflow_dispatch:
 
 

@@ -1,11 +1,18 @@
-# Use GPU for simulation inside Docker
----
-**NOTE**
+# Use GPU inside Docker
+If you have a computer with a (recent) NVIDIA GPU, you can speed up the simulation container and / or use CUDA in your robot container. To this end, we provide a seperate simulation image on [Dockerhub](https://hub.docker.com/r/fieldrobotevent/simulation_nvidia) in which the GPU is enabled. Instead of using `GZWeb`, this simulation image automatically launches the Gazebo Client user interface and `RVIZ`.
 
-This probably works, but we still have to test this and provide an example Dockerfile for the robot workspace with CUDA enabled. This will be updated in the future.
+To use CUDA within your robot container, change the `FROM` argument to `fieldrobotevent/ros-noetic-cuda:latest` and add the `nvidia-container-runtime` environent variables in your `Dockerfile`:
 
----
-If you have a computer with a (recent) NVIDIA GPU, you can use the GPU to speed up the simulation container. To this end, we provide a seperate simulation image on [Dockerhub](https://hub.docker.com/r/fieldrobotevent/simulation_nvidia) in which the GPU is enabled. Instead of using `GZWeb`, this simulation image automatically launches the Gazebo Client user interface and RVIZ.
+```dockerfile
+FROM fieldrobotevent/ros-noetic-cuda:latest
+
+ENV NVIDIA_VISIBLE_DEVICES \
+    ${NVIDIA_VISIBLE_DEVICES:-all}
+ENV NVIDIA_DRIVER_CAPABILITIES \
+    ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+
+# Rest of your Dockerfile
+```
 
 Before you can use your GPU inside the Docker, you need to install the NVIDIA container toolkit and upgrade docker-compose to the newest version.
 

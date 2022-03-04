@@ -38,7 +38,7 @@ If you are not new to Docker and you are using a computer with a NVIDIA GPU, you
 ## Additional information
 * [Create your robot container from scratch](doc/create_from_scratch.md)
 * [Connect your local ROS installation to the competition environment](doc/connect_ros_to_containers.md)
-* [Use a NVIDIA GPU to speed up the simulation](doc/use_gpu_in_docker.md)
+* [Use a GPU to speed up simulation and use CUDA within a container](doc/use_gpu_in_docker.md)
 
 ## Troubeshooting
 
