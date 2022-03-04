@@ -1,6 +1,6 @@
 name: Build ROS image with CUDA capabilities
 
-# Only trigger when we make a change to the simulation container
+# Only trigger when we make a change to the dockerfile
 on:
   push:
     branches:
