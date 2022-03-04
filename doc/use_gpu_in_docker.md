@@ -58,12 +58,12 @@ sudo curl -L https://github.com/docker/compose/releases/download/${VERSION}/dock
 sudo chmod 755 $DESTINATION
 ```
 
-## Use the simulation container with the GPU
-All docker compose files have two versions, one for use without GPU and one for use with GPU. The docker compose files in the folders ending with `_nvidia` can be used with your GPU. 
+## Use the containers with the GPU
+All docker compose files have two versions, one for use without GPU and one for use with GPU. The docker compose files in the folders ending with `_cuda` can be used with your GPU. As example, launch the navigation task:
 
 ```commandline
 python3 scripts/copy_simulation_files.py
-cd task_navigation_nvidia
+cd task_navigation_cuda
 ./start_simulation.sh
 ```
 
