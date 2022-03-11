@@ -35,4 +35,4 @@ jobs:
         with:
           context: dockerfiles/simulation_cuda
           push: true
-          tags: fieldrobotevent/simulation_cuda:latest
+          tags: fieldrobotevent/simulation-cuda:latest
