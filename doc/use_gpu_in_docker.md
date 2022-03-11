@@ -1,11 +1,19 @@
-# Use GPU for simulation inside Docker
----
-**NOTE**
+# Use GPU inside Docker
+If you have a computer with a (recent) NVIDIA GPU, you can speed up the simulation container and / or use CUDA in your robot container. You can test this by running `nvidia-smi`. To this end, we provide a seperate simulation image on [Dockerhub](https://hub.docker.com/r/fieldrobotevent/simulation-cuda) in which the GPU is enabled. Instead of using `GZWeb`, this simulation image automatically launches the Gazebo Client user interface and `RVIZ`.
 
-This probably works, but we still have to test this and provide an example Dockerfile for the robot workspace with CUDA enabled. This will be updated in the future.
+To use CUDA within your robot container, change the `FROM` argument to `fieldrobotevent/ros-noetic-cuda:latest` and add the `nvidia-container-runtime` environent variables in your `Dockerfile`:
 
----
-If you have a computer with a (recent) NVIDIA GPU, you can use the GPU to speed up the simulation container. To this end, we provide a seperate simulation image on [Dockerhub](https://hub.docker.com/r/fieldrobotevent/simulation_nvidia) in which the GPU is enabled. Instead of using `GZWeb`, this simulation image automatically launches the Gazebo Client user interface and RVIZ.
+```dockerfile
+FROM fieldrobotevent/ros-noetic-cuda:latest
+
+ENV NVIDIA_VISIBLE_DEVICES \
+    ${NVIDIA_VISIBLE_DEVICES:-all}
+ENV NVIDIA_DRIVER_CAPABILITIES \
+    ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+
+# Rest of your Dockerfile
+```
+You can test if your robot workspace has CUDA capabilities by running `docker run --rm -it --gpus all robot_workspace nvidia-smi` after building your robot workspace image.
 
 Before you can use your GPU inside the Docker, you need to install the NVIDIA container toolkit and upgrade docker-compose to the newest version.
 
@@ -50,12 +58,12 @@ sudo curl -L https://github.com/docker/compose/releases/download/${VERSION}/dock
 sudo chmod 755 $DESTINATION
 ```
 
-## Use the simulation container with the GPU
-All docker compose files have two versions, one for use without GPU and one for use with GPU. The docker compose files in the folders ending with `_nvidia` can be used with your GPU. 
+## Use the containers with the GPU
+All docker compose files have two versions, one for use without GPU and one for use with GPU. The docker compose files in the folders ending with `_cuda` can be used with your GPU. As example, launch the navigation task:
 
 ```commandline
 python3 scripts/copy_simulation_files.py
-cd task_navigation_nvidia
+cd task_navigation_cuda
 ./start_simulation.sh
 ```
 

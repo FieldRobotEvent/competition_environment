@@ -1,7 +1,7 @@
 version: '3'
 services:
   simulation:
-    image: fieldrobotevent/simulation_nvidia:latest
+    image: fieldrobotevent/simulation-cuda:latest
     container_name: simulation
     volumes:
       - "../simulation_files/map:/simulation_ws/src/virtual_maize_field/map"
@@ -37,11 +37,18 @@ services:
     volumes:
       - "../simulation_files/map:/catkin/src/virtual_maize_field/map"
       - "../simulation_files/launch:/catkin/src/virtual_maize_field/launch"
-    environment:
-      - TASK_NUMBER=1
     networks:
       competition_network:
         ipv4_address: 172.20.0.6
+    environment:
+      - TASK_NUMBER=1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
 
 networks:
   competition_network:
