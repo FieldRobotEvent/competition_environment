@@ -41,7 +41,7 @@ services:
       competition_network:
         ipv4_address: 172.20.0.6
     environment:
-      - TASk=navigation
+      - TASK=mapping
     deploy:
       resources:
         reservations:
