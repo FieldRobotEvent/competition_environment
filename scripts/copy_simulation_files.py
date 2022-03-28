@@ -53,6 +53,7 @@ GAZEBO_EXTENSIONS_TO_KEEP = (
 ALLOWED_GAZEBO_PLUGINS = (
     "libgazebo_ros_camera.so",
     "libgazebo_ros_multicamera.so",
+    "libgazebo_ros_openni_kinect.so",
     "libgazebo_ros_control.so",
     "libgazebo_ros_gpu_laser.so",
     "libhector_gazebo_ros_imu.so",
