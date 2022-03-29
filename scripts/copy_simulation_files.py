@@ -57,6 +57,7 @@ ALLOWED_GAZEBO_PLUGINS = (
     "libgazebo_ros_control.so",
     "libgazebo_ros_gpu_laser.so",
     "libhector_gazebo_ros_imu.so",
+    "libgazebo_ros_bumper.so",
 )  # All allowed sensor plugins. No other plugins will be installed in the simulation conainer.
 
 
