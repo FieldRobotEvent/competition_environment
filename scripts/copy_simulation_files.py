@@ -321,7 +321,7 @@ def check_world_file() -> tuple[int, str]:
     if not world_file.is_file():
         msg = (
             f"Could not find your generated .world file at '{world_file}'. Generate a"
-            " world file by 'rosrun virtual_maize_field create_task_1_mini'"
+            " world file by 'rosrun virtual_maize_field generate_world.py fre22_task_navigation_mini'"
         )
         return Validation.ERROR, msg
 
