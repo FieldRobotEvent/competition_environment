@@ -34,7 +34,9 @@ ENV SIMULATION_WS /simulation_ws
 RUN mkdir -p ${SIMULATION_WS}/src && \
   git clone https://github.com/FieldRobotEvent/virtual_maize_field ${SIMULATION_WS}/src/virtual_maize_field && \
   git clone https://github.com/FieldRobotEvent/hector_gazebo_plugins ${SIMULATION_WS}/src/hector_gazebo_plugins && \
+  git clone https://github.com/pal-robotics/realsense_gazebo_plugin/ ${SIMULATION_WS}/src/realsense_gazebo_plugin && \
   echo "source /opt/ros/${ROS_DISTRO}/setup.bash && \
+  source /usr/share/gazebo/setup.sh && \
   cd ${SIMULATION_WS}/ && \
   catkin_make" | bash
   
