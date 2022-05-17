@@ -35,6 +35,7 @@ RUN mkdir -p ${SIMULATION_WS}/src && \
   git clone https://github.com/FieldRobotEvent/virtual_maize_field ${SIMULATION_WS}/src/virtual_maize_field && \
   git clone https://github.com/FieldRobotEvent/hector_gazebo_plugins ${SIMULATION_WS}/src/hector_gazebo_plugins && \
   git clone https://github.com/pal-robotics/realsense_gazebo_plugin/ ${SIMULATION_WS}/src/realsense_gazebo_plugin && \
+  git clone https://github.com/FieldRobotEvent/evaluation_nodes ${SIMULATION_WS}/src/evaluation_nodes && \
   echo "source /opt/ros/${ROS_DISTRO}/setup.bash && \
   source /usr/share/gazebo/setup.sh && \
   cd ${SIMULATION_WS}/ && \
@@ -53,6 +54,7 @@ VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/map"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/Media"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/worlds"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/launch"]
+VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/rviz"]
 VOLUME ["${SIMULATION_WS}/src/robot_packages"]
 VOLUME ["/tmp/.X11-unix"]
 VOLUME ["/tmp/.docker.xauth"] 
@@ -64,5 +66,8 @@ EXPOSE 11345
 COPY ./entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 
+# Create task ENV (will be overrided in docker-compose)
+ENV TASK=navigation
+
 # Start simulation
-CMD roslaunch virtual_maize_field simulation.launch paused:=true gui:=true & rosrun rviz rviz
+CMD roslaunch virtual_maize_field simulation.launch paused:=true gui:=true & roslaunch evaluation_nodes evaluation.launch task:=${TASK}
