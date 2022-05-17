@@ -55,6 +55,7 @@ VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/Media"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/worlds"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/launch"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/rviz"]
+VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/models"]
 VOLUME ["${SIMULATION_WS}/src/robot_packages"]
 VOLUME ["/tmp/.X11-unix"]
 VOLUME ["/tmp/.docker.xauth"] 
@@ -70,4 +71,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 ENV TASK=navigation
 
 # Start simulation
-CMD roslaunch virtual_maize_field simulation.launch paused:=true gui:=true & roslaunch evaluation_nodes evaluation.launch task:=${TASK}
+CMD roslaunch virtual_maize_field simulation.launch paused:=true gui:=true
