@@ -2,9 +2,9 @@ FROM fieldrobotevent/ros-noetic-cuda:latest
 
 # nvidia-container-runtime
 ENV NVIDIA_VISIBLE_DEVICES \
-    ${NVIDIA_VISIBLE_DEVICES:-all}
+  ${NVIDIA_VISIBLE_DEVICES:-all}
 ENV NVIDIA_DRIVER_CAPABILITIES \
-    ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+  ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
 
 # Install packages
 RUN apt-get update && \
@@ -13,20 +13,20 @@ RUN apt-get update && \
   curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - && \
   apt-get update && \
   apt-get -y --no-install-recommends install \
-    # Ubuntu packages
-    git \
-    python3-pip \
-    # ROS packages
-    ros-${ROS_DISTRO}-gazebo-ros-pkgs \
-    ros-${ROS_DISTRO}-gazebo-ros-control \
-    ros-${ROS_DISTRO}-pointgrey-camera-description \
-    ros-${ROS_DISTRO}-robot-localization \
-    ros-${ROS_DISTRO}-twist-mux \
-    ros-${ROS_DISTRO}-interactive-marker-twist-server \
-    ros-${ROS_DISTRO}-ros-controllers \
-    ros-${ROS_DISTRO}-four-wheel-steering-controller \
-    ros-${ROS_DISTRO}-urdf-geometry-parser \
-    ros-${ROS_DISTRO}-rviz && \
+  # Ubuntu packages
+  git \
+  python3-pip \
+  # ROS packages
+  ros-${ROS_DISTRO}-gazebo-ros-pkgs \
+  ros-${ROS_DISTRO}-gazebo-ros-control \
+  ros-${ROS_DISTRO}-pointgrey-camera-description \
+  ros-${ROS_DISTRO}-robot-localization \
+  ros-${ROS_DISTRO}-twist-mux \
+  ros-${ROS_DISTRO}-interactive-marker-twist-server \
+  ros-${ROS_DISTRO}-ros-controllers \
+  ros-${ROS_DISTRO}-four-wheel-steering-controller \
+  ros-${ROS_DISTRO}-urdf-geometry-parser \
+  ros-${ROS_DISTRO}-rviz && \
   rm -rf /var/lib/apt/lists/*
 
 # Clone the simulation code from Github and catkin_make
@@ -40,7 +40,7 @@ RUN mkdir -p ${SIMULATION_WS}/src && \
   source /usr/share/gazebo/setup.sh && \
   cd ${SIMULATION_WS}/ && \
   catkin_make" | bash
-  
+
 # Install the dependencies of the repository
 RUN apt-get update && \
   rosdep install -y --from-paths ${SIMULATION_WS} --ignore-src && \
@@ -55,6 +55,7 @@ VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/Media"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/worlds"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/launch"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/rviz"]
+VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/models"]
 VOLUME ["${SIMULATION_WS}/src/robot_packages"]
 VOLUME ["/tmp/.X11-unix"]
 VOLUME ["/tmp/.docker.xauth"] 
@@ -66,8 +67,11 @@ EXPOSE 11345
 COPY ./entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 
+# # Copy the start launch file
+COPY ./start_simulation.launch ${SIMULATION_WS}/src/virtual_maize_field/
+
 # Create task ENV (will be overrided in docker-compose)
 ENV TASK=navigation
 
 # Start simulation
-CMD roslaunch virtual_maize_field simulation.launch paused:=true gui:=true & roslaunch evaluation_nodes evaluation.launch task:=${TASK}
+CMD roslaunch virtual_maize_field start_simulation.launch task:=${TASK}

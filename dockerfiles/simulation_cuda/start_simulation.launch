@@ -1,0 +1,13 @@
+<launch>
+    <arg name="task" default="navigation" />
+
+    <include file="$(find virtual_maize_field)/launch/simulation.launch">
+        <arg name="paused" default="true" />
+        <arg name="gui" value="true" />
+        <arg name="check_for_updates" value="false" />
+    </include>
+
+    <include file="$(find evaluation_nodes)/launch/evaluation.launch">
+        <arg name="task" default="$(arg task)" />
+    </include>
+</launch>

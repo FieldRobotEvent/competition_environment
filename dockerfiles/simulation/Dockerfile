@@ -80,6 +80,7 @@ VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/Media"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/worlds"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/launch"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/rviz"]
+VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/models"]
 VOLUME ["${SIMULATION_WS}/src/robot_packages"]
 VOLUME ["${GZWEB_DIR}/http/client/assets"]
 
@@ -90,9 +91,12 @@ EXPOSE 8080 11345
 COPY ./entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 
+# Copy the start launch file
+COPY ./start_simulation.launch ${SIMULATION_WS}/src/virtual_maize_field/
+
 # Create task ENV (will be overrided in docker-compose)
 ENV TASK=navigation
 
 # Start simulation and GZWeb, only show non-standard output for GZWeb
-CMD xvfb-run -s '-screen 0 1280x1024x24' roslaunch virtual_maize_field simulation.launch paused:=true gui:=false & \
+CMD xvfb-run -s '-screen 0 1280x1024x24' roslaunch virtual_maize_field start_simulation.launch task:={TASK} & \
   echo "npm start --prefix ${GZWEB_DIR} 1> /dev/null" | bash
