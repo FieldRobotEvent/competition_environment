@@ -81,6 +81,7 @@ VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/worlds"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/launch"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/rviz"]
 VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/models"]
+VOLUME ["${SIMULATION_WS}/src/virtual_maize_field/gt"]
 VOLUME ["${SIMULATION_WS}/src/robot_packages"]
 VOLUME ["${GZWEB_DIR}/http/client/assets"]
 

@@ -10,6 +10,7 @@ services:
       - "../simulation_files/launch:/simulation_ws/src/virtual_maize_field/launch"
       - "../simulation_files/rviz:/simulation_ws/src/virtual_maize_field/rviz"
       - "../simulation_files/models:/simulation_ws/src/virtual_maize_field/models"
+      - "../simulation_files/gt:/simulation_ws/src/virtual_maize_field/gt"
       - "../simulation_files/robot_packages:/simulation_ws/src/robot_packages"
       - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
       - "/tmp/.docker.xauth:/tmp/.docker.xauth"
