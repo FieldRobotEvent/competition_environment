@@ -9,6 +9,7 @@ services:
       - "../simulation_files/worlds:/simulation_ws/src/virtual_maize_field/worlds"
       - "../simulation_files/launch:/simulation_ws/src/virtual_maize_field/launch"
       - "../simulation_files/models:/simulation_ws/src/virtual_maize_field/models"
+      - "../simulation_files/gt:/simulation_ws/src/virtual_maize_field/gt"
       - "../simulation_files/gzweb:/gzweb/http/client/assets"
       - "../simulation_files/robot_packages:/simulation_ws/src/robot_packages"
     ports:

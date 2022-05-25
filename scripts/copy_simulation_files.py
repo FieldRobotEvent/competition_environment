@@ -18,6 +18,7 @@ VMF_FOLDERS_TO_COPY = (
     "launch",
     "rviz",
     "models",
+    "gt",
 )  # Folders that are needed by the simulation container
 GZWEB_VMF_FOLDERS_TO_COPY = (
     "models",
