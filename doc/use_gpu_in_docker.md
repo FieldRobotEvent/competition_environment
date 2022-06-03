@@ -2,7 +2,7 @@
 ---
 **NOTE**
 
-To use CUDA capabilities with the provided docker-compose files, you need at least Docker Compose v1.28.0. [Download](https://docs.docker.com/compose/install/) or [upgrade](https://stackoverflow.com/questions/49839028/how-to-upgrade-docker-compose-to-latest-version) your Docker Compose if needed.
+To use CUDA capabilities with the provided docker-compose files, you need at least Docker Compose v1.28.0 and `nvidia-docker2`. [Download](https://docs.docker.com/compose/install/) or [upgrade](https://stackoverflow.com/questions/49839028/how-to-upgrade-docker-compose-to-latest-version) your Docker Compose if needed and install [`nvidia-docker2`](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html).
 
 ---
 
