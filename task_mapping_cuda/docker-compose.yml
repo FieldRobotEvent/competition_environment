@@ -16,6 +16,7 @@ services:
       - "/tmp/.docker.xauth:/tmp/.docker.xauth"
     ports:
     - "11345:11345"
+    privileged: true
     networks:
       competition_network:
         ipv4_address: 172.20.0.5
