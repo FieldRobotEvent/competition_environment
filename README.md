@@ -1,5 +1,5 @@
 # Competition environment
-This repository contains the `docker-compose` scripts needed to run a competition on your own computer. For each task, one `docker-compose` script is provided. These compose files are creating two Docker containers:
+This repository contains the `docker-compose` scripts needed to run a competition on your own computer. For each task, one `docker-compose` script is provided (a `cuda` and non-`cuda` version). These compose files are creating two Docker containers:
 
 1. The simulation container that is simulating the virtual maize field and the robots sensor data. This container is created from the [simulation image](https://hub.docker.com/r/fieldrobotevent/simulation) and is provided by the organization. 
 2. The robot container that is defining the robots behaviour and includes all software needed to run your robot. This container is created from a robot workspace image which is build by you. An [example workspace](https://github.com/FieldRobotEvent/example_ws) containing a Dockerfile to build a robot container is provided.
@@ -10,7 +10,19 @@ This repository contains the `docker-compose` scripts needed to run a competitio
 When testing the competition environment on your own computer, the simulation image is downloaded automatically from Dockerhub. The world files generated in the [virtual maize field](https://github.com/FieldRobotEvent/virtual_maize_field) in your robot workspace will be copied and used for the simulation. You can start the simulation by going to [https://localhost:8080](https://localhost:8080) in your webbrowser and press the play button.
 
 ### On the Field Robot Event
-Before the Field Robot Event start, we ask you to sent us your robot image by using FileTransfer or Dockerhub. The world files used in the event are created by the organization. Your robot will be simulated on the hardware of the organization and the simulation will be projected on a screen and streamed to the internet. 
+Before the Field Robot Event start, we ask you to sent us your robot image using a USB-drive. The organization will hand out USB-drives for this purpose.  The world files used in the event are created by the organization. Your robot will be simulated on the hardware of the organization and the simulation will be projected on a screen and streamed to the internet.
+
+For the simulation contest, you have to hand in both your robot workspace image and the zipped [simulation_files](/simulation_files) folder. To do this, create the `robot_workspace.tgz` container and `simulation_files.zip`: 
+```
+cd ~/<your_workspace_folder>
+docker build . -t robot_workspace
+docker image save robot_workspace | gzip -c - > robot_workspace.tgz
+cd ~/<the_cloned_competition_environment_folder>
+python3 scripts/copy_simulation_files.py
+zip -r simulation_files.zip simulation_files/
+```
+
+Copy both files (`robot_workspace.tgz` container and `simulation_files.zip`) on the USB-drive and hand in the USB-drive on time. 
 
 ## Usage
 To run the competition environment on your own computer, follow the steps below:
