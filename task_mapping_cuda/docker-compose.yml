@@ -14,6 +14,7 @@ services:
       - "../simulation_files/robot_packages:/simulation_ws/src/robot_packages"
       - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
       - "/tmp/.docker.xauth:/tmp/.docker.xauth"
+      - "/var/run/spnav.sock:/var/run/spnav.sock"
     ports:
     - "11345:11345"
     privileged: true
