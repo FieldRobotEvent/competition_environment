@@ -53,7 +53,7 @@ for folder in robot_packages rviz; do
 done
 
 echo "Removing generated files..."
-for file in "${SIMULATION_FILES_DIR}/map/pred_map.csv" "${SIMULATION_FILES_DIR}/map/mapping_results.png" "${SIMULATION_FILES_DIR}/map/stats.csv"; do
+for file in "${SIMULATION_FILES_DIR}/map/pred_map.csv" "${SIMULATION_FILES_DIR}/gt/mapping_results.png" "${SIMULATION_FILES_DIR}/gt/stats.csv"; do
     rm -f ${file}
 
     if [ $? -ne 0 ]; then
