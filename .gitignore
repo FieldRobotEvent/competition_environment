@@ -1,8 +1,15 @@
+# Ignore folders
+/.vscode/*
 /simulation_files/*
 /competition_files
 
+# Ignore file extensions
 *.pyc
 *.zip
 *.tgz
 
+# Add specific files
 !/simulation_files/.gitkeep
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/c_cpp_properties.json
