@@ -33,7 +33,7 @@ then
 fi
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
-TEAM_FILES_DIR=$(readlink -f "${SCRIPT_DIR}/../competition_files/${TEAM_NAME}")
+TEAM_FILES_DIR="${SCRIPT_DIR}/../competition_files/${TEAM_NAME}"
 
 if [ -d ${TEAM_FILES_DIR} ] 
 then
@@ -84,6 +84,8 @@ done
 # Source: https://gist.github.com/stefanvangastel/d6b5b38e8716ea102b651c67c100225f
 echo "Loading Docker image..."
 LOAD_RESULT=$(docker load -i ${IMAGE_FILE})
+echo ${LOAD_RESULT}
+
 LOAD_IMAGE_NAME=${LOAD_RESULT#*: }
 
 echo "Retagging Docker image from ${LOAD_IMAGE_NAME} to ${TEAM_NAME}/robot_workspace"
