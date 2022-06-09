@@ -52,6 +52,16 @@ for folder in robot_packages rviz; do
     fi
 done
 
+echo "Removing generated files..."
+for file in "${SIMULATION_FILES_DIR}/map/pred_map.csv" "${SIMULATION_FILES_DIR}/map/mapping_results.png" "${SIMULATION_FILES_DIR}/map/stats.csv"; do
+    rm -f ${file}
+
+    if [ $? -ne 0 ]; then
+        echo "Failed to remove file ${file}!"
+        exit 1
+    fi
+done
+
 echo "Retagging Docker image from ${TEAM_NAME}/robot_workspace to robot_workspace"
 docker tag "${TEAM_NAME}/robot_workspace" "robot_workspace"
 
