@@ -1,4 +1,5 @@
 /simulation_files/*
+/competition_files
 
 *.pyc
 *.zip
