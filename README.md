@@ -7,7 +7,7 @@ This repository contains the `docker-compose` scripts needed to run a competitio
 <img src="doc/docker_container_structure.svg" alt="Docker Container structure">
 
 ### Test competition on your own hardware
-When testing the competition environment on your own computer, the simulation image is downloaded automatically from Dockerhub. The world files generated in the [virtual maize field](https://github.com/FieldRobotEvent/virtual_maize_field) in your robot workspace will be copied and used for the simulation. You can start the simulation by going to [https://localhost:8080](https://localhost:8080) in your webbrowser and press the play button.
+When testing the competition environment on your own computer, the simulation image is downloaded automatically from Dockerhub (don't forget to periodically update the simulation image by `docker pull fieldrobotevent/simulation`). The world files generated in the [virtual maize field](https://github.com/FieldRobotEvent/virtual_maize_field) in your robot workspace will be copied and used for the simulation. You can start the simulation by going to [https://localhost:8080](https://localhost:8080) in your webbrowser and press the play button.
 
 ### On the Field Robot Event
 Before the Field Robot Event start, we ask you to give us your robot image using a USB-drive. The organization will hand out USB-drives for this purpose.  The world files used in the event are created by the organization. Your robot will be simulated on the hardware of the organization and the simulation will be projected on a screen and streamed to the internet.
