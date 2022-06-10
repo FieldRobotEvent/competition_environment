@@ -13,7 +13,12 @@ rosrun virtual_maize_field generate_world.py fre22_task_<task_name>_fast
 cd ~/competition_environment
 python3 scripts/copy_simulation_files.py
 ```
-5. For every team, load the Docker file and simulation files:
+5. Make the computer the owner of the output folders:
+```
+sudo chown -R $USER ~/competition_environment/simulation_files/gt/
+sudo chown -R $USER ~/competition_environment/simulation_files/map/
+```
+6. For every team, load the Docker file and simulation files:
 ```
 cd ~/competition_environment
 ./scripts/load_files.sh -i <path_to_robot_workspace.tgz> -s <path_to_simulation_files.zip> -n <team_name>
