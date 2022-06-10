@@ -51,7 +51,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-for file in "${SIMULATION_FILES_DIR}/map/pred_map.csv" "${SIMULATION_FILES_DIR}/map/mapping_results.png" "${SIMULATION_FILES_DIR}/map/stats.csv"; do
+for file in "${SIMULATION_FILES_DIR}/map/pred_map.csv" "${SIMULATION_FILES_DIR}/gt/mapping_results.png" "${SIMULATION_FILES_DIR}/gt/stats.csv"; do
     cp ${file} "${TEAM_FILES_DIR}/results"
 
     if [ $? -ne 0 ]; then
