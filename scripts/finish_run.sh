@@ -57,6 +57,9 @@ for file in "${SIMULATION_FILES_DIR}/map/pred_map.csv" "${SIMULATION_FILES_DIR}/
         continue
     fi
 
+    # Fix permissions
+    sudo chown ${USER} ${file}
+
     mv ${file} "${TEAM_FILES_DIR}/results"
 
     if [ $? -ne 0 ]; then
