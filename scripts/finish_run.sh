@@ -52,7 +52,12 @@ if [ $? -ne 0 ]; then
 fi
 
 for file in "${SIMULATION_FILES_DIR}/map/pred_map.csv" "${SIMULATION_FILES_DIR}/gt/mapping_results.png" "${SIMULATION_FILES_DIR}/gt/stats.csv"; do
-    cp ${file} "${TEAM_FILES_DIR}/results"
+    if [ ! -f "${file}" ]; then
+        echo "Could not find ${file}"
+        continue
+    fi
+
+    mv ${file} "${TEAM_FILES_DIR}/results"
 
     if [ $? -ne 0 ]; then
         echo "Failed to copy file ${file}!"
