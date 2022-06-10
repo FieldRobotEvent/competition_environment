@@ -16,9 +16,12 @@ Before the Field Robot Event start, we ask you to give us your robot image using
 
 For the simulation contest, you have to hand in both your robot workspace image and the zipped [simulation_files](/simulation_files) folder. To do this, create the `robot_workspace.tgz` container and `simulation_files.zip`: 
 ```
+# Create the robot workspace image
 cd ~/<your_workspace_folder>
 docker build . -t robot_workspace
 docker image save robot_workspace | gzip -c - > robot_workspace.tgz
+
+# Create the simulation files
 cd ~/<the_cloned_competition_environment_folder>
 python3 scripts/copy_simulation_files.py
 zip -r simulation_files.zip simulation_files/
