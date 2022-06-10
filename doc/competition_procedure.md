@@ -1,5 +1,5 @@
 # Competition procedure
-Every team hands in their Docker image and compressed `simulation_files` folder on a USB-drive. 
+Every team hands in their Docker image and compressed [`simulation_files`](../simulation_files/) folder on a USB-drive. 
 
 ## Before the event
 1. Generate a random world for the task that looks like the real field:
