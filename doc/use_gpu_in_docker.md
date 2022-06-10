@@ -6,7 +6,7 @@ To use CUDA capabilities with the provided docker-compose files, you need at lea
 
 ---
 
-If you have a computer with a (recent) NVIDIA GPU, you can speed up the simulation container and / or use CUDA in your robot container. You can test this by running `nvidia-smi`. To this end, we provide a seperate simulation image on [Dockerhub](https://hub.docker.com/r/fieldrobotevent/simulation-cuda) in which the GPU is enabled. Instead of using `GZWeb`, this simulation image automatically launches the Gazebo Client user interface and an evaluation window.
+If you have a computer with a (recent) NVIDIA GPU, you can speed up the simulation container and / or use CUDA in your robot container. You can test this by running `nvidia-smi`. To this end, we provide a seperate simulation image on [Dockerhub](https://hub.docker.com/r/fieldrobotevent/simulation-cuda) in which the GPU is enabled. Instead of using `GZWeb`, this simulation image automatically launches the Gazebo Client user interface and an [evaluation window](https://github.com/fieldrobotevent/evaluation_nodes).
 
 ## Run the competition environment with CUDA
 All docker compose files have two versions, one for use without CUDA and one for use with CUDA. The docker compose files in the folders ending with `_cuda` can be used with your GPU. As example, launch the navigation task:
