@@ -6,6 +6,7 @@ from re import compile, finditer, search
 from typing import TypeVar
 from xml.etree import ElementTree
 
+import subprocess
 import rospkg
 from rospkg import RosPack
 from rospkg.common import ResourceNotFound
@@ -20,7 +21,11 @@ class URDF:
 
     def __init__(self, urdf_file: Path) -> None:
         self.urdf_file = urdf_file
-        self.urdf_root = ElementTree.parse(self.urdf_file).getroot()
+        if self.urdf_file.suffix == ".xacro":
+            xacro_run = subprocess.run(["xacro", urdf_file.absolute()], capture_output=True)
+            self.urdf_root = ElementTree.fromstring(xacro_run.stdout)
+        else:
+            self.urdf_root = ElementTree.parse(self.urdf_file).getroot()
 
     def __repr__(self) -> str:
         return f"URDF file ({self.urdf_file.name})"
@@ -137,7 +142,11 @@ class Workspace:
             model_files[root.name] = model_sdf
 
         for world_file in self.workspace_folder.glob("**/*.world"):
-            world_root = ElementTree.parse(world_file).getroot()
+            try:
+                world_root = ElementTree.parse(world_file).getroot()
+            except:
+                print(f"Skipping non parseable world file {world_file}")
+                continue
 
             used_model_files.append(world_file)
 
