@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+import subprocess
 from os import environ
 from pathlib import Path
 from re import compile, finditer, search
 from typing import TypeVar
 from xml.etree import ElementTree
 
-import subprocess
 import rospkg
 from rospkg import RosPack
 from rospkg.common import ResourceNotFound
