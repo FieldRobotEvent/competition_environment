@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import subprocess
 from os import environ
 from pathlib import Path
 from re import compile, finditer, search
@@ -21,11 +20,7 @@ class URDF:
 
     def __init__(self, urdf_file: Path) -> None:
         self.urdf_file = urdf_file
-        if self.urdf_file.suffix == ".xacro":
-            xacro_run = subprocess.run(["xacro", urdf_file.absolute()], capture_output=True)
-            self.urdf_root = ElementTree.fromstring(xacro_run.stdout)
-        else:
-            self.urdf_root = ElementTree.parse(self.urdf_file).getroot()
+        self.urdf_root = ElementTree.parse(self.urdf_file).getroot()
 
     def __repr__(self) -> str:
         return f"URDF file ({self.urdf_file.name})"
