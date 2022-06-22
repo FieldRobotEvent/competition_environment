@@ -9,6 +9,7 @@ from xml.etree import ElementTree
 import rospkg
 from rospkg import RosPack
 from rospkg.common import ResourceNotFound
+from xacro import process_file as process_xacro_file
 
 _T = TypeVar("_T")
 _URDF_EXTENSIONS = (".world", ".sdf", ".xacro", ".urdf")
@@ -17,10 +18,11 @@ _URDF_EXTENSIONS = (".world", ".sdf", ".xacro", ".urdf")
 class URDF:
     PACKAGE_REGEX = compile(r"package:\/\/(.+?)\/(.+\..+)")
     FIND_REGEX = compile(r"\$\(find (.+)\)\/(.+\..+)")
+    OPTENV_REGEX = compile(r"\$\(optenv (.+) (.+)\)")
 
     def __init__(self, urdf_file: Path) -> None:
         self.urdf_file = urdf_file
-        self.urdf_root = ElementTree.parse(self.urdf_file).getroot()
+        self.urdf_root = self.parse_file(self.urdf_file)
 
     def __repr__(self) -> str:
         return f"URDF file ({self.urdf_file.name})"
@@ -47,8 +49,12 @@ class URDF:
         packages = []
         resources = []
 
+        # print(xml)
+
+        # print(ElementTree.tostring(xml))
+
         if isinstance(xml, Path):
-            xml = ElementTree.parse(xml).getroot()
+            xml = URDF.parse_file(xml)
 
         packages_, resources_ = URDF.get_dependencies_from_element(xml)
 
@@ -75,7 +81,11 @@ class URDF:
         packages = []
         resources = []
 
+        # for a in xml_root.iter():
+        #     print(a)
+
         for tag in xml_root.findall(".//*[@filename]"):
+
             if tag.attrib["filename"].startswith("package://"):
                 package_name_match = search(URDF.PACKAGE_REGEX, tag.attrib["filename"])
 
@@ -120,6 +130,59 @@ class URDF:
     @staticmethod
     def remove_double_instances(input: list[_T]) -> list[_T]:
         return list(set(input))
+
+    @staticmethod
+    def parse_file(file: Path) -> ElementTree.Element:
+        xml_raw = ElementTree.parse(file).getroot()
+
+        if file.suffix != ".xacro":
+            return xml_raw
+
+        # Fix for env variables in xacro
+        def parse_optenv_statement(xml: ElementTree.Element, element: str) -> list[str]:
+            optenv_list = []
+            for statement in xml.findall(".//{http://www.ros.org/wiki/xacro}" + element):
+                if "optenv" in statement.attrib["value"]:
+                    variable = search(URDF.OPTENV_REGEX, statement.attrib["value"])
+
+                    if variable is not None:
+                        name, _ = variable.groups()
+                        optenv_list.append(name)
+
+            return optenv_list
+
+        optenv_list = []
+
+        # Add optenv from current file
+        optenv_list.extend(parse_optenv_statement(xml_raw, "if"))
+        optenv_list.extend(parse_optenv_statement(xml_raw, "unless"))
+
+        # Get optenv from all dependend URDF files
+        for used_file in URDF.get_all_dependencies(xml_raw)[1]:
+            if used_file.suffix in _URDF_EXTENSIONS:
+                dep_xml_raw = ElementTree.parse(file).getroot()
+                optenv_list.extend(parse_optenv_statement(dep_xml_raw, "if"))
+                optenv_list.extend(parse_optenv_statement(dep_xml_raw, "unless"))
+
+        optenv_list = sorted(URDF.remove_double_instances(optenv_list))
+        optenv_list = [v for v in optenv_list if v not in environ]
+
+        # Ask to set the variables if not done yet
+        if len(optenv_list) > 0:
+            print(
+                f"Your robot URDF file contains {len(optenv_list)} options that are set using environment "
+                f"variables. Indicate for each of the {len(optenv_list)} options [y/n] if you want to set "
+                "that option:\n\n"
+            )
+
+            for optenv_variable in optenv_list:
+                answer = input(
+                    f"Do you want to set the '{optenv_variable}' variable for the xacro configuration? [y/n] "
+                ).lower()
+                environ[optenv_variable] = str(1 if answer == "y" else 0)
+
+        # After setting the environ variables, parse the file again using xacro
+        return ElementTree.fromstring(process_xacro_file(file).toxml())
 
 
 class Workspace:
