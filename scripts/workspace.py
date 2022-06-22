@@ -49,10 +49,6 @@ class URDF:
         packages = []
         resources = []
 
-        # print(xml)
-
-        # print(ElementTree.tostring(xml))
-
         if isinstance(xml, Path):
             xml = URDF.parse_file(xml)
 
@@ -80,9 +76,6 @@ class URDF:
     def get_dependencies_from_element(xml_root: ElementTree.Element) -> tuple[list[str], list[Path]]:
         packages = []
         resources = []
-
-        # for a in xml_root.iter():
-        #     print(a)
 
         for tag in xml_root.findall(".//*[@filename]"):
 
